@@ -13,7 +13,7 @@ export default function Footer() {
             </h3>
             <p className="text-sm leading-relaxed">
               Tu almacén de barrio en Corrientes Capital. Productos saludables,
-              frescos y locales para una vida mejor.
+              frescos y locales para una vida mejor. Estamos para cuidarte, con nosotros tenes lo que queres. 
             </p>
           </div>
 
@@ -31,7 +31,7 @@ export default function Footer() {
               </li>
               <li className="flex items-start gap-2">
                 <Phone size={16} className="text-vergel-sage mt-0.5 flex-shrink-0" />
-                <span>+54 379 XXX-XXXX</span>
+                <span>+54 379 01-0765</span>
               </li>
               <li className="flex items-start gap-2">
                 <Mail size={16} className="text-vergel-sage mt-0.5 flex-shrink-0" />
@@ -104,7 +104,7 @@ export default function Footer() {
                 <Facebook size={18} />
               </a>
               <a
-                href="https://wa.me/54379XXXXXXX"
+                href="https://wa.me/54379401-0765"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 bg-vergel-gray/20 rounded-vergel hover:bg-vergel-sage/30 transition-colors"

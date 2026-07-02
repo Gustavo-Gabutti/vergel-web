@@ -5,8 +5,11 @@ import TopBar from "@/components/TopBar";
 import Header from "@/components/Header";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import PromoBannerCarousel from "@/components/PromoBannerCarousel";
 import ProductGrid from "@/components/ProductGrid";
+import ProductDetailModal from "@/components/ProductDetailModal";
 import CartDrawer from "@/components/CartDrawer";
+import InfoSections from "@/components/InfoSections";
 import Footer from "@/components/Footer";
 import productsData from "@/data/products.json";
 import { Product } from "@/components/ProductCard";
@@ -22,19 +25,31 @@ export default function Home() {
   const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const products: Product[] = productsData as Product[];
 
-  const handleAddToCart = useCallback((product: Product) => {
+  const handleViewDetail = useCallback((product: Product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
+
+  const handleAddToCart = useCallback((product: Product, quantity: number = 1) => {
     setCartItems((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
       if (existing) {
         return prev.map((item) =>
           item.product.id === product.id
-            ? { ...item, quantity: Math.min(item.quantity + 1, 10) }
+            ? { ...item, quantity: Math.min(item.quantity + quantity, 99) }
             : item
         );
       }
-      return [...prev, { product, quantity: 1 }];
+      return [...prev, { product, quantity: Math.min(quantity, 99) }];
     });
     setCartOpen(true);
   }, []);
@@ -69,18 +84,25 @@ export default function Home() {
         activeCategory={activeCategory}
         onCategoryChange={setActiveCategory}
       />
-
       <main className="flex-1">
         <Hero />
+        <PromoBannerCarousel />
         <ProductGrid
           products={products}
           activeCategory={activeCategory}
           searchQuery={searchQuery}
-          onAddToCart={handleAddToCart}
+          onViewDetail={handleViewDetail}
         />
+        <InfoSections />
       </main>
-
       <Footer />
+
+      <ProductDetailModal
+        product={selectedProduct}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onAddToCart={handleAddToCart}
+      />
 
       <CartDrawer
         isOpen={cartOpen}

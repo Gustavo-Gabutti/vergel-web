@@ -1,1 +1,79 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter), var(--font-poppins), sans-serif;
+}
+
+/* Estilos base nativos en v4 */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-vergel-cream);
+  color: var(--color-vergel-charcoal);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: var(--color-vergel-sage-light);
+  color: var(--color-vergel-charcoal);
+}
+
+/* Componentes usando @utility en v4 */
+@utility btn-primary {
+  background-color: var(--color-vergel-olive);
+  color: var(--color-white);
+  padding: 0.625rem 1.5rem;
+  border-radius: var(--radius-vergel);
+  font-weight: 500;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-duration: 200ms;
+
+  &:hover {
+    background-color: var(--color-vergel-olive-dark);
+  }
+  &:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--color-vergel-olive);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  }
+}
+
+@utility btn-secondary {
+  background-color: var(--color-vergel-sand);
+  color: var(--color-vergel-charcoal);
+  padding: 0.625rem 1.5rem;
+  border-radius: var(--radius-vergel);
+  font-weight: 500;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-duration: 200ms;
+
+  &:hover {
+    background-color: var(--color-vergel-warm-light);
+  }
+  &:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--color-vergel-warm);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  }
+}
+
+@utility card-product {
+  background-color: var(--color-white);
+  border-radius: var(--radius-vergel);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(var(--color-vergel-sand), 0.5);
+  transition-all: all 200ms;
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-vergel-sage);
+  }
+}

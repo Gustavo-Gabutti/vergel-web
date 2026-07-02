@@ -32,7 +32,7 @@ export default function Hero() {
           </div>
           <div className="flex items-center gap-2 text-sm">
             <Truck size={18} className="text-vergel-olive" />
-            <span>Envíos a todo el país</span>
+            <span>Envíos solo a Corrientes Capital</span>
           </div>
           <div className="flex items-center gap-2 text-sm">
             <Heart size={18} className="text-vergel-olive" />

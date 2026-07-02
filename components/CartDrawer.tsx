@@ -1,6 +1,6 @@
 "use client";
 
-import { X, Trash2, ShoppingBag } from "lucide-react";
+import { X, Trash2, ShoppingBag, PackageCheck, PackageOpen } from "lucide-react";
 import { Product } from "./ProductCard";
 
 interface CartItem {
@@ -16,6 +16,9 @@ interface CartDrawerProps {
   onUpdateQuantity: (productId: string, quantity: number) => void;
 }
 
+const WHATSAPP_NUMBER = "5493794010765";
+const FREE_SHIPPING_THRESHOLD = 15000;
+
 export default function CartDrawer({
   isOpen,
   onClose,
@@ -24,6 +27,34 @@ export default function CartDrawer({
   onUpdateQuantity,
 }: CartDrawerProps) {
   const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+
+  const shippingProgress = Math.min((total / FREE_SHIPPING_THRESHOLD) * 100, 100);
+  const remaining = FREE_SHIPPING_THRESHOLD - total;
+  const hasFreeShipping = total >= FREE_SHIPPING_THRESHOLD;
+
+  const handleSendToWhatsApp = () => {
+    if (items.length === 0) return;
+
+    let message = "¡Hola! Quiero hacer el siguiente pedido a Vergel:\n\n";
+
+    items.forEach((item) => {
+      const subtotal = item.product.price * item.quantity;
+      message += `• ${item.product.name} (${item.product.weight}) x${item.quantity} — $${subtotal.toLocaleString("es-AR")}\n`;
+    });
+
+    message += `\n*Total: $${total.toLocaleString("es-AR")}*\n\n`;
+
+    if (hasFreeShipping) {
+      message += "✅ ¡Pedido con envío GRATIS!\n\n";
+    }
+
+    message += "Quedo a la espera de confirmación. ¡Gracias!";
+
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+
+    window.open(whatsappUrl, "_blank");
+  };
 
   return (
     <>
@@ -116,18 +147,51 @@ export default function CartDrawer({
 
           {/* Footer del carrito */}
           {items.length > 0 && (
-            <div className="p-4 border-t border-vergel-sand">
-              <div className="flex justify-between items-center mb-4">
+            <div className="p-4 border-t border-vergel-sand space-y-4">
+
+              {/* Indicador de envío gratis */}
+              <div className="rounded-vergel bg-vergel-off-white border border-vergel-sand/60 p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  {hasFreeShipping ? (
+                    <PackageCheck size={16} className="text-vergel-olive flex-shrink-0" />
+                  ) : (
+                    <PackageOpen size={16} className="text-vergel-gray flex-shrink-0" />
+                  )}
+                  <p className="text-xs font-medium text-vergel-charcoal">
+                    {hasFreeShipping
+                      ? "¡Felicitaciones! Tenés envío gratis de Vergel 🎉"
+                      : `¡Estás a solo $${remaining.toLocaleString("es-AR")} de conseguir Envío GRATIS!`}
+                  </p>
+                </div>
+                {/* Barra de progreso */}
+                <div className="w-full h-1.5 bg-vergel-sand rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-500 ease-out"
+                    style={{
+                      width: `${shippingProgress}%`,
+                      backgroundColor: hasFreeShipping ? "#606c38" : "#a3b18a",
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Total */}
+              <div className="flex justify-between items-center">
                 <span className="font-medium text-vergel-gray">Total</span>
                 <span className="font-display font-bold text-xl text-vergel-charcoal">
                   ${total.toLocaleString("es-AR")}
                 </span>
               </div>
-              <button className="btn-primary w-full text-center">
-                Iniciar compra
+
+              <button
+                onClick={handleSendToWhatsApp}
+                className="w-full flex items-center justify-center gap-2 text-base py-3 bg-[#606c38] hover:bg-[#283618] text-white font-semibold rounded-[var(--radius-vergel)] transition-colors duration-200"
+              >
+                Enviar pedido por WhatsApp
               </button>
-              <p className="text-[11px] text-vergel-gray-light text-center mt-2">
-                Envíos a todo el país · Múltiples medios de pago
+
+              <p className="text-[11px] text-vergel-gray-light text-center">
+                Envíos a todo Corrientes · Múltiples medios de pago
               </p>
             </div>
           )}

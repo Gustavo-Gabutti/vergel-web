@@ -1,7 +1,20 @@
 import type { Metadata } from "next";
+import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
-import WhatsAppButton from "@/components/WhatsAppButton";
-import AIChatWidget from "@/components/AIChatWidget";
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-poppins",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Vergel · Almacén de Barrio | Productos Saludables en Corrientes",
@@ -32,13 +45,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es-AR">
+    <html lang="es-AR" className={`${inter.variable} ${poppins.variable}`}>
       <body className="min-h-screen flex flex-col">
         {children}
-
-        {/* Widgets flotantes — se renderizan en toda la app */}
-        <WhatsAppButton />
-        <AIChatWidget />
+        {/* Limpito: Ya no hay widgets flotantes acá abajo */}
       </body>
     </html>
   );

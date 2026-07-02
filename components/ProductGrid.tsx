@@ -8,14 +8,14 @@ interface ProductGridProps {
   products: Product[];
   activeCategory: string;
   searchQuery: string;
-  onAddToCart: (product: Product) => void;
+  onViewDetail: (product: Product) => void;
 }
 
 export default function ProductGrid({
   products,
   activeCategory,
   searchQuery,
-  onAddToCart,
+  onViewDetail,
 }: ProductGridProps) {
   const [sortBy, setSortBy] = useState("default");
 
@@ -91,7 +91,7 @@ export default function ProductGrid({
             <ProductCard
               key={product.id}
               product={product}
-              onAddToCart={onAddToCart}
+              onViewDetail={onViewDetail}
             />
           ))}
         </div>

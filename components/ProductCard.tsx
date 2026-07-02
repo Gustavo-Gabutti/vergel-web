@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
-import { ShoppingCart, Sparkles } from "lucide-react";
+import { Sparkles, Eye } from "lucide-react";
 
 export interface Product {
   id: string;
@@ -22,70 +20,52 @@ export interface Product {
 
 interface ProductCardProps {
   product: Product;
-  onAddToCart: (product: Product) => void;
+  onViewDetail: (product: Product) => void;
 }
 
-export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
-  const [imageError, setImageError] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
-
+export default function ProductCard({ product, onViewDetail }: ProductCardProps) {
   const discount = product.originalPrice
-    ? Math.round(
-        ((product.originalPrice - product.price) / product.originalPrice) * 100
-      )
+    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
 
   return (
-    <article className="card-product flex flex-col overflow-hidden group">
+    <article
+      onClick={() => onViewDetail(product)}
+      className="card-product flex flex-col overflow-hidden group cursor-pointer
+                 focus-within:ring-2 focus-within:ring-vergel-olive"
+    >
       {/* Imagen */}
-      <div className="relative aspect-square bg-vergel-sand/40 overflow-hidden">
-        {/* Skeleton / placeholder mientras carga */}
-        {!imageLoaded && !imageError && (
-          <div className="absolute inset-0 flex items-center justify-center
-                          bg-vergel-sand/30 animate-pulse">
-            <span className="text-4xl opacity-40">🌿</span>
-          </div>
-        )}
+      <div className="relative aspect-square bg-vergel-off-white overflow-hidden">
+        {/* Placeholder visual — reemplazar con <Image /> de next/image */}
+        <div className="w-full h-full flex items-center justify-center text-vergel-gray-light">
+          <span className="text-6xl">🌿</span>
+        </div>
 
-        {/* Fallback si la imagen falla */}
-        {imageError ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center
-                          bg-vergel-sand/30 text-vergel-gray-light">
-            <span className="text-5xl mb-1">🌿</span>
-            <span className="text-[10px]">Imagen no disponible</span>
-          </div>
-        ) : (
-          <Image
-            src={product.image}
-            alt={`${product.name} - ${product.category} - ${product.weight}`}
-            fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className={`
-              object-cover
-              transition-all duration-500
-              group-hover:scale-105
-              ${imageLoaded ? "opacity-100" : "opacity-0"}
-            `}
-            onLoad={() => setImageLoaded(true)}
-            onError={() => setImageError(true)}
-          />
-        )}
+        {/* Overlay "Ver producto" al hacer hover */}
+        <div
+          className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors
+                     duration-200 flex items-center justify-center"
+        >
+          <span
+            className="opacity-0 group-hover:opacity-100 transition-opacity duration-200
+                       bg-white/90 text-vergel-charcoal text-xs font-semibold
+                       px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm"
+          >
+            <Eye size={13} /> Ver producto
+          </span>
+        </div>
 
         {/* Badges */}
-        <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
+        <div className="absolute top-2 left-2 flex flex-col gap-1">
           {product.isNew && (
-            <span
-              className="bg-vergel-olive text-white text-[10px] font-bold
-                         px-2 py-1 rounded-full flex items-center gap-1"
-            >
+            <span className="bg-vergel-olive text-white text-[10px] font-bold
+                             px-2 py-1 rounded-full flex items-center gap-1">
               <Sparkles size={10} /> NUEVO
             </span>
           )}
           {product.isOffer && discount > 0 && (
-            <span
-              className="bg-vergel-alert text-white text-[10px] font-bold
-                         px-2 py-1 rounded-full"
-            >
+            <span className="bg-vergel-alert text-white text-[10px] font-bold
+                             px-2 py-1 rounded-full">
               -{discount}%
             </span>
           )}
@@ -110,33 +90,17 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
           {product.weight}
         </span>
 
-        {/* Precio + CTA */}
-        <div className="mt-auto pt-3 flex items-end justify-between">
-          <div>
-            {product.originalPrice && (
-              <span className="text-xs text-vergel-gray-light line-through block">
-                ${product.originalPrice.toLocaleString("es-AR")}
-              </span>
-            )}
-            <span
-              className={`font-display font-bold text-lg
-                ${product.isOffer ? "text-vergel-alert" : "text-vergel-charcoal"}`}
-            >
-              ${product.price.toLocaleString("es-AR")}
+        {/* Precio */}
+        <div className="mt-auto pt-3">
+          {product.originalPrice && (
+            <span className="text-xs text-vergel-gray-light line-through block">
+              ${product.originalPrice.toLocaleString("es-AR")}
             </span>
-          </div>
-
-          <button
-            onClick={() => onAddToCart(product)}
-            disabled={!product.stock}
-            className="bg-vergel-olive text-white p-2.5 rounded-vergel
-                       hover:bg-vergel-olive-dark transition-colors duration-200
-                       disabled:opacity-40 disabled:cursor-not-allowed
-                       focus:outline-none focus:ring-2 focus:ring-vergel-olive focus:ring-offset-2"
-            aria-label={`Agregar ${product.name} al carrito`}
-          >
-            <ShoppingCart size={16} />
-          </button>
+          )}
+          <span className={`font-display font-bold text-lg
+            ${product.isOffer ? "text-vergel-alert" : "text-vergel-charcoal"}`}>
+            ${product.price.toLocaleString("es-AR")}
+          </span>
         </div>
       </div>
     </article>

@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
+import { ShoppingCart, Search } from "lucide-react";
 import { useState } from "react";
-import { Search, ShoppingCart, Menu, X } from "lucide-react";
 
 interface HeaderProps {
   cartCount: number;
@@ -10,109 +12,71 @@ interface HeaderProps {
 }
 
 export default function Header({ cartCount, onCartClick, onSearch }: HeaderProps) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [query, setQuery] = useState("");
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSearch(searchQuery);
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+    onSearch(e.target.value);
   };
 
   return (
-    <header className="bg-white border-b border-vergel-sand sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 py-3">
-        <div className="flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3 h-16">
 
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <h1 className="font-display font-bold text-2xl sm:text-3xl text-vergel-charcoal">
-              <span className="text-vergel-olive">V</span>ERGEL
-            </h1>
-            <p className="text-[10px] sm:text-xs text-vergel-gray-light tracking-widest uppercase -mt-1">
-              Almacén de barrio
-            </p>
-          </div>
+        {/* Logo */}
+        <Link href="/" className="flex-shrink-0 flex items-center" aria-label="Ir al inicio">
+          <Image
+            src="/logo-vergel.png"
+            alt="Vergel — Almacén de Barrio"
+            width={140}
+            height={48}
+            className="w-[110px] sm:w-[130px] h-auto object-contain"
+            priority
+          />
+        </Link>
 
-          {/* Buscador — desktop */}
-          <form
-            onSubmit={handleSearch}
-            className="hidden md:flex flex-1 max-w-lg mx-8"
-          >
-            <div className="relative w-full">
-              <input
-                type="text"
-                placeholder="¿Qué estás buscando?"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-4 pr-12 py-2.5 rounded-vergel border border-vergel-sand
-                           bg-vergel-off-white text-sm text-vergel-charcoal
-                           placeholder:text-vergel-gray-light
-                           focus:outline-none focus:ring-2 focus:ring-vergel-olive focus:border-transparent
-                           transition-all duration-200"
-              />
-              <button
-                type="submit"
-                className="absolute right-1 top-1/2 -translate-y-1/2 bg-vergel-olive text-white
-                           p-2 rounded-lg hover:bg-vergel-olive-dark transition-colors"
-                aria-label="Buscar"
-              >
-                <Search size={16} />
-              </button>
-            </div>
-          </form>
-
-          {/* Acciones */}
-          <div className="flex items-center gap-3">
-            {/* Carrito */}
-            <button
-              onClick={onCartClick}
-              className="relative p-2 rounded-vergel hover:bg-vergel-off-white transition-colors"
-              aria-label={`Carrito con ${cartCount} productos`}
-            >
-              <ShoppingCart size={22} className="text-vergel-charcoal" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-vergel-alert text-white
-                                 text-[10px] font-bold w-5 h-5 rounded-full
-                                 flex items-center justify-center">
-                  {cartCount}
-                </span>
-              )}
-            </button>
-
-            {/* Hamburguesa mobile */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-vergel hover:bg-vergel-off-white transition-colors"
-              aria-label="Abrir menú"
-            >
-              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-            </button>
-          </div>
+        {/* Buscador */}
+        <div className="flex-1 relative max-w-2xl">
+          <Search
+            size={15}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+          />
+          <input
+            type="search"
+            value={query}
+            onChange={handleSearch}
+            placeholder="Buscar productos..."
+            className="w-full pl-9 pr-4 py-2 text-sm bg-gray-50 border border-gray-300
+                       rounded-md text-gray-900 placeholder:text-gray-400
+                       focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent
+                       transition-colors"
+          />
         </div>
 
-        {/* Buscador — mobile */}
-        <form onSubmit={handleSearch} className="md:hidden mt-3">
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder="¿Qué estás buscando?"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-4 pr-12 py-2.5 rounded-vergel border border-vergel-sand
-                         bg-vergel-off-white text-sm text-vergel-charcoal
-                         placeholder:text-vergel-gray-light
-                         focus:outline-none focus:ring-2 focus:ring-vergel-olive"
-            />
-            <button
-              type="submit"
-              className="absolute right-1 top-1/2 -translate-y-1/2 bg-vergel-olive text-white
-                         p-2 rounded-lg"
-              aria-label="Buscar"
+        {/* Carrito con Colores Seguros Obligatorios */}
+        <button
+          onClick={onCartClick}
+          type="button"
+          className="relative flex-shrink-0 w-11 h-11 flex items-center justify-center 
+                     bg-emerald-700 hover:bg-emerald-800 text-white rounded-md 
+                     transition-colors duration-200 focus:outline-none focus:ring-2 
+                     focus:ring-emerald-600 focus:ring-offset-2 cursor-pointer shadow-sm"
+          aria-label={`Abrir carrito${cartCount > 0 ? `, ${cartCount} productos` : ""}`}
+        >
+          <ShoppingCart size={20} className="text-white" />
+          
+          {/* El globo del contador ahora se va a ver SÍ O SÍ en rojo brillante */}
+          {cartCount > 0 && (
+            <span
+              className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[11px]
+                         font-bold w-5 h-5 rounded-full flex items-center justify-center 
+                         leading-none border border-white shadow-sm z-50 animate-scale-in"
             >
-              <Search size={16} />
-            </button>
-          </div>
-        </form>
+              {cartCount > 9 ? "9+" : cartCount}
+            </span>
+          )}
+        </button>
+
       </div>
     </header>
   );
