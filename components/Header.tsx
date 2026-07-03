@@ -23,10 +23,10 @@ export default function Header({ cartCount, onCartClick, onSearch }: HeaderProps
     <header className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3 h-16">
 
-        {/* Logo */}
+        {/* Logo con ruta corregida a la carpeta images y formato SVG */}
         <Link href="/" className="flex-shrink-0 flex items-center" aria-label="Ir al inicio">
           <Image
-            src="/logo-vergel.png"
+            src="/images/logo-vergel.svg"
             alt="Vergel — Almacén de Barrio"
             width={140}
             height={48}
@@ -53,7 +53,7 @@ export default function Header({ cartCount, onCartClick, onSearch }: HeaderProps
           />
         </div>
 
-        {/* Carrito con Colores Seguros Obligatorios */}
+        {/* Carrito */}
         <button
           onClick={onCartClick}
           type="button"
@@ -65,12 +65,11 @@ export default function Header({ cartCount, onCartClick, onSearch }: HeaderProps
         >
           <ShoppingCart size={20} className="text-white" />
           
-          {/* El globo del contador ahora se va a ver SÍ O SÍ en rojo brillante */}
           {cartCount > 0 && (
             <span
               className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[11px]
                          font-bold w-5 h-5 rounded-full flex items-center justify-center 
-                         leading-none border border-white shadow-sm z-50 animate-scale-in"
+                         leading-none border border-white shadow-sm z-50"
             >
               {cartCount > 9 ? "9+" : cartCount}
             </span>
