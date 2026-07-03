@@ -23,10 +23,10 @@ export default function Header({ cartCount, onCartClick, onSearch }: HeaderProps
     <header className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3 h-16">
 
-        {/* Logo con ruta corregida a la carpeta images y formato SVG */}
+        {/* Logo con la ruta apuntando al archivo JPG definitivo */}
         <Link href="/" className="flex-shrink-0 flex items-center" aria-label="Ir al inicio">
           <Image
-            src="/images/logo-vergel.svg"
+            src="/images/logo-vergel.jpg"
             alt="Vergel — Almacén de Barrio"
             width={140}
             height={48}
