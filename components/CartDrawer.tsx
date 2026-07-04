@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Trash2, ShoppingBag, PackageCheck, PackageOpen } from "lucide-react";
+import { X, Trash2, ShoppingBag, PackageCheck, PackageOpen, Minus, Plus } from "lucide-react";
 import { Product } from "./ProductCard";
 
 interface CartItem {
@@ -27,12 +27,10 @@ interface FormState {
   nombre: string;
   apellido: string;
   delivery: DeliveryType;
-  // envío a domicilio
   calle: string;
   numero: string;
   piso: string;
   depto: string;
-  // retiro
   turno: RetiroTurno;
 }
 
@@ -107,7 +105,6 @@ export default function CartDrawer({
     }
 
     message += "\n¡Quedo a la espera de confirmación. Gracias!";
-
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank");
   };
 
@@ -172,7 +169,8 @@ export default function CartDrawer({
                   <ul className="space-y-3">
                     {items.map((item) => (
                       <li key={item.product.id} className="flex gap-3 p-3 bg-gray-50 rounded-xl">
-                        {/* Imagen del producto en el carrito */}
+
+                        {/* Imagen */}
                         <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
                           <img
                             src={item.product.image}
@@ -180,32 +178,60 @@ export default function CartDrawer({
                             className="w-full h-full object-cover"
                           />
                         </div>
+
+                        {/* Info + contador */}
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-sm text-gray-900 truncate">{item.product.name}</p>
-                          <p className="text-xs text-gray-400">{item.product.weight}</p>
-                          <div className="flex items-center gap-2 mt-2">
-                            <select
-                              value={item.quantity}
-                              onChange={(e) => onUpdateQuantity(item.product.id, parseInt(e.target.value))}
-                              className="text-xs bg-white border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-emerald-700"
-                              aria-label={`Cantidad de ${item.product.name}`}
+                          <p className="text-xs text-gray-400 mb-2">{item.product.weight}</p>
+
+                          {/* ── Contador +/- (reemplaza al <select>) ── */}
+                          <div className="flex items-center gap-1">
+                            {/* Botón disminuir — elimina si llega a 0 */}
+                            <button
+                              onClick={() => onUpdateQuantity(item.product.id, item.quantity - 1)}
+                              className="w-7 h-7 flex items-center justify-center rounded-lg border border-gray-200
+                                         bg-white hover:bg-gray-100 text-gray-600 transition-colors
+                                         focus:outline-none focus:ring-2 focus:ring-emerald-700"
+                              aria-label={`Disminuir cantidad de ${item.product.name}`}
                             >
-                              {[1,2,3,4,5,6,7,8,9,10].map((n) => (
-                                <option key={n} value={n}>{n}</option>
-                              ))}
-                            </select>
+                              <Minus size={12} />
+                            </button>
+
+                            {/* Cantidad — ancho fijo para no saltar al cambiar dígitos */}
+                            <span className="w-8 text-center text-sm font-semibold text-gray-900 tabular-nums">
+                              {item.quantity}
+                            </span>
+
+                            {/* Botón aumentar — máx 99 */}
+                            <button
+                              onClick={() => onUpdateQuantity(item.product.id, Math.min(item.quantity + 1, 99))}
+                              disabled={item.quantity >= 99}
+                              className="w-7 h-7 flex items-center justify-center rounded-lg border border-gray-200
+                                         bg-white hover:bg-gray-100 text-gray-600 transition-colors
+                                         disabled:opacity-30 disabled:cursor-not-allowed
+                                         focus:outline-none focus:ring-2 focus:ring-emerald-700"
+                              aria-label={`Aumentar cantidad de ${item.product.name}`}
+                            >
+                              <Plus size={12} />
+                            </button>
+
+                            {/* Botón eliminar */}
                             <button
                               onClick={() => onRemove(item.product.id)}
-                              className="text-red-400 hover:text-red-600 transition-colors"
+                              className="ml-2 text-red-400 hover:text-red-600 transition-colors
+                                         focus:outline-none focus:ring-2 focus:ring-red-400 rounded"
                               aria-label={`Eliminar ${item.product.name}`}
                             >
                               <Trash2 size={14} />
                             </button>
                           </div>
                         </div>
-                        <p className="font-semibold text-sm text-gray-900 whitespace-nowrap">
+
+                        {/* Subtotal */}
+                        <p className="font-semibold text-sm text-gray-900 whitespace-nowrap self-center">
                           ${(item.product.price * item.quantity).toLocaleString("es-AR")}
                         </p>
+
                       </li>
                     ))}
                   </ul>
@@ -214,7 +240,8 @@ export default function CartDrawer({
 
               {items.length > 0 && (
                 <div className="p-4 border-t border-gray-100 space-y-4">
-                  {/* Indicador de envío gratis */}
+
+                  {/* Indicador envío gratis */}
                   <div className="rounded-xl bg-gray-50 border border-gray-200 p-3">
                     <div className="flex items-center gap-2 mb-2">
                       {hasFreeShipping
@@ -266,9 +293,7 @@ export default function CartDrawer({
 
               {/* Nombre y apellido */}
               <div>
-                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                  Tus datos
-                </h4>
+                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Tus datos</h4>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-medium text-gray-700 mb-1">
@@ -301,9 +326,7 @@ export default function CartDrawer({
 
               {/* Tipo de entrega */}
               <div>
-                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                  Tipo de entrega
-                </h4>
+                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Tipo de entrega</h4>
                 <div className="grid grid-cols-2 gap-3">
                   {(["envio", "retiro"] as DeliveryType[]).map((type) => (
                     <button
@@ -324,9 +347,7 @@ export default function CartDrawer({
               {/* Campos condicionales: ENVÍO */}
               {form.delivery === "envio" && (
                 <div className="space-y-3">
-                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Dirección de entrega
-                  </h4>
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Dirección de entrega</h4>
                   <div className="grid grid-cols-3 gap-3">
                     <div className="col-span-2">
                       <label className="block text-xs font-medium text-gray-700 mb-1">
@@ -387,34 +408,35 @@ export default function CartDrawer({
               {/* Campos condicionales: RETIRO */}
               {form.delivery === "retiro" && (
                 <div>
-                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                    ¿En qué turno venís?
-                  </h4>
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">¿En qué turno venís?</h4>
                   <div className="grid grid-cols-2 gap-3">
                     {(["manana", "tarde"] as RetiroTurno[]).map((t) => (
                       <button
                         key={t}
                         onClick={() => set("turno", t)}
-                        className={`py-3 px-4 rounded-xl border-2 text-sm font-medium transition-colors
+                        className={`py-4 px-3 rounded-xl border-2 text-sm font-medium transition-colors leading-snug
                           ${form.turno === t
                             ? "border-emerald-700 bg-emerald-50 text-emerald-800"
                             : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
                           }`}
                       >
-                        {t === "manana" ? "🌤 Mañana\n9:00–12:00 hs" : "🌅 Tarde\n15:00–19:00 hs"}
+                        <span className="block">{t === "manana" ? "🌤 Mañana" : "🌅 Tarde"}</span>
+                        <span className="block text-xs font-normal mt-0.5 opacity-70">
+                          {t === "manana" ? "9:00 – 12:00 hs" : "15:00 – 19:00 hs"}
+                        </span>
                       </button>
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* Resumen del pedido */}
+              {/* Resumen */}
               <div className="rounded-xl bg-gray-50 border border-gray-200 p-4">
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Resumen</p>
                 {items.map((item) => (
                   <div key={item.product.id} className="flex justify-between text-sm text-gray-700 py-0.5">
-                    <span>{item.product.name} x{item.quantity}</span>
-                    <span>${(item.product.price * item.quantity).toLocaleString("es-AR")}</span>
+                    <span className="truncate mr-2">{item.product.name} ×{item.quantity}</span>
+                    <span className="whitespace-nowrap">${(item.product.price * item.quantity).toLocaleString("es-AR")}</span>
                   </div>
                 ))}
                 <div className="flex justify-between font-bold text-gray-900 mt-2 pt-2 border-t border-gray-200">
@@ -423,7 +445,6 @@ export default function CartDrawer({
                 </div>
               </div>
 
-              {/* Botón enviar */}
               <button
                 onClick={handleSendToWhatsApp}
                 className="w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold
