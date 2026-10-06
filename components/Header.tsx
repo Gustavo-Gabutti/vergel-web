@@ -18,7 +18,9 @@ export default function Header({ cartCount, onCartClick, onSearch }: HeaderProps
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
       setQuery(value);
+
       if (debounceRef.current) clearTimeout(debounceRef.current);
+
       debounceRef.current = setTimeout(() => {
         onSearch(value);
       }, 300);
@@ -27,9 +29,8 @@ export default function Header({ cartCount, onCartClick, onSearch }: HeaderProps
   );
 
   return (
-    <header className="sticky top-0 z-40 bg-white border-b border-gray-100 shadow-sm">
+    <header className="bg-white border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
-
         {/* Logo — <img> nativo, sin dependencia de next/image */}
         <Link href="/" className="flex-shrink-0 flex items-center" aria-label="Ir al inicio">
           <img
@@ -50,34 +51,33 @@ export default function Header({ cartCount, onCartClick, onSearch }: HeaderProps
             value={query}
             onChange={handleSearch}
             placeholder="Buscar productos..."
-            className="w-full pl-9 pr-4 py-2 text-sm bg-gray-50 border border-gray-200
-                       rounded-lg text-gray-900 placeholder:text-gray-400
-                       focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:border-transparent
-                       transition-colors duration-200"
+            className="w-full pl-9 pr-4 py-2 text-sm bg-gray-50 border border-gray-200 
+            rounded-lg text-gray-900 placeholder:text-gray-400 
+            focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:border-transparent 
+            transition-colors duration-200"
           />
         </div>
 
         {/* Carrito */}
         <button
           onClick={onCartClick}
-          className="relative flex-shrink-0 p-2.5 bg-emerald-700 hover:bg-emerald-800
-                     text-white rounded-lg transition-colors duration-200
-                     focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2"
-          aria-label={`Abrir carrito${cartCount > 0 ? `, ${cartCount} productos` : ""}`}
+          className="relative flex-shrink-0 p-2.5 bg-emerald-700 hover:bg-emerald-800 
+          text-white rounded-lg transition-colors duration-200 
+          focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2"
+          aria-label={`Abrir carrito${cartCount > 0 ? `, \${cartCount} productos` : ""}`}
         >
           <ShoppingCart size={20} />
           {cartCount > 0 && (
             <span
               key={cartCount}
-              className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px]
-                         font-bold w-5 h-5 rounded-full flex items-center justify-center leading-none
-                         animate-[scale-in_0.2s_ease-out]"
+              className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px] 
+              font-bold w-5 h-5 rounded-full flex items-center justify-center leading-none 
+              animate-[scale-in_0.2s_ease-out]"
             >
               {cartCount > 9 ? "9+" : cartCount}
             </span>
           )}
         </button>
-
       </div>
     </header>
   );

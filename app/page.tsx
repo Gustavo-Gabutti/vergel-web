@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+
 import TopBar from "@/components/TopBar";
 import Header from "@/components/Header";
 import Navbar from "@/components/Navbar";
@@ -11,6 +12,7 @@ import ProductDetailModal from "@/components/ProductDetailModal";
 import CartDrawer from "@/components/CartDrawer";
 import InfoSections from "@/components/InfoSections";
 import Footer from "@/components/Footer";
+
 import productsData from "@/data/products.json";
 import { Product } from "@/components/ProductCard";
 
@@ -33,17 +35,17 @@ function loadCartFromStorage(): CartItem[] {
 }
 
 export default function Home() {
-  const [activeCategory, setActiveCategory] = useState("Todos");
-  const [searchQuery, setSearchQuery]       = useState("");
-  const [cartOpen, setCartOpen]             = useState(false);
-  const [cartItems, setCartItems]           = useState<CartItem[]>([]);
+  const [activeCategory, setActiveCategory]   = useState("Todos");
+  const [searchQuery, setSearchQuery]         = useState("");
+  const [cartOpen, setCartOpen]               = useState(false);
+  const [cartItems, setCartItems]             = useState<CartItem[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [isModalOpen, setIsModalOpen]       = useState(false);
-  const [cartLoaded, setCartLoaded]         = useState(false);
+  const [isModalOpen, setIsModalOpen]         = useState(false);
+  const [cartLoaded, setCartLoaded]           = useState(false);
 
   const products: Product[] = productsData as Product[];
 
-  // Cargar carrito desde localStorage solo en el cliente (evita hidratación)
+  // Cargar carrito desde localStorage solo en el cliente
   useEffect(() => {
     setCartItems(loadCartFromStorage());
     setCartLoaded(true);
@@ -51,11 +53,11 @@ export default function Home() {
 
   // Persistir carrito en localStorage cada vez que cambia
   useEffect(() => {
-    if (!cartLoaded) return; // espera a que se cargue primero
+    if (!cartLoaded) return;
     try {
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
     } catch {
-      // localStorage lleno o bloqueado — no es crítico
+      // localStorage lleno o bloqueado
     }
   }, [cartItems, cartLoaded]);
 
@@ -68,8 +70,6 @@ export default function Home() {
     setIsModalOpen(false);
   }, []);
 
-  // Sin setCartOpen(true) → el carrito NO se abre automáticamente
-  // El contador del header se actualiza solo porque cartItems cambia
   const handleAddToCart = useCallback((product: Product, quantity: number = 1) => {
     setCartItems((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
@@ -82,7 +82,6 @@ export default function Home() {
       }
       return [...prev, { product, quantity: Math.min(quantity, 99) }];
     });
-    // ← SIN setCartOpen(true) — el carrito NO se abre al agregar
   }, []);
 
   const handleRemoveFromCart = useCallback((productId: string) => {
@@ -106,15 +105,20 @@ export default function Home() {
   return (
     <>
       <TopBar />
-      <Header
-        cartCount={cartCount}
-        onCartClick={() => setCartOpen(true)}
-        onSearch={setSearchQuery}
-      />
-      <Navbar
-        activeCategory={activeCategory}
-        onCategoryChange={setActiveCategory}
-      />
+
+      {/* Contenedor sticky único que mantiene agrupados al Header y la Navbar */}
+      <div className="sticky top-0 z-40 bg-white shadow-sm">
+        <Header
+          cartCount={cartCount}
+          onCartClick={() => setCartOpen(true)}
+          onSearch={setSearchQuery}
+        />
+        <Navbar
+          activeCategory={activeCategory}
+          onCategoryChange={setActiveCategory}
+        />
+      </div>
+
       <main className="flex-1">
         <Hero />
         <PromoBannerCarousel />
@@ -126,6 +130,7 @@ export default function Home() {
         />
         <InfoSections />
       </main>
+
       <Footer />
 
       <ProductDetailModal
