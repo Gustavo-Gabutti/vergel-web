@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-
 import TopBar from "@/components/TopBar";
 import Header from "@/components/Header";
 import Navbar from "@/components/Navbar";
@@ -12,9 +11,9 @@ import ProductDetailModal from "@/components/ProductDetailModal";
 import CartDrawer from "@/components/CartDrawer";
 import InfoSections from "@/components/InfoSections";
 import Footer from "@/components/Footer";
-
 import productsData from "@/data/products.json";
 import { Product } from "@/components/ProductCard";
+import { getProductsFromSanity } from "@/lib/sanity/queries";
 
 const CART_STORAGE_KEY = "vergel_cart";
 
@@ -23,7 +22,7 @@ export interface CartItem {
   quantity: number;
 }
 
-// Lee el carrito desde localStorage de forma segura (solo en el cliente)
+// Lee el carrito desde localStorage
 function loadCartFromStorage(): CartItem[] {
   if (typeof window === "undefined") return [];
   try {
@@ -35,30 +34,44 @@ function loadCartFromStorage(): CartItem[] {
 }
 
 export default function Home() {
-  const [activeCategory, setActiveCategory]   = useState("Todos");
-  const [searchQuery, setSearchQuery]         = useState("");
-  const [cartOpen, setCartOpen]               = useState(false);
-  const [cartItems, setCartItems]             = useState<CartItem[]>([]);
+  const [activeCategory, setActiveCategory] = useState("Todos");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [cartOpen, setCartOpen] = useState(false);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [isModalOpen, setIsModalOpen]         = useState(false);
-  const [cartLoaded, setCartLoaded]           = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [cartLoaded, setCartLoaded] = useState(false);
 
-  const products: Product[] = productsData as Product[];
+  // Estado dinámico para los productos de Sanity (con respaldo en products.json)
+  const [products, setProducts] = useState<Product[]>(productsData as Product[]);
 
-  // Cargar carrito desde localStorage solo en el cliente
+  // Traer productos desde Sanity en tiempo real
+  useEffect(() => {
+    async function loadSanityProducts() {
+      try {
+        const sanityProducts = await getProductsFromSanity();
+        if (sanityProducts && sanityProducts.length > 0) {
+          setProducts(sanityProducts);
+        }
+      } catch (error) {
+        console.error("Error cargando productos de Sanity:", error);
+      }
+    }
+    loadSanityProducts();
+  }, []);
+
+  // Cargar carrito desde localStorage
   useEffect(() => {
     setCartItems(loadCartFromStorage());
     setCartLoaded(true);
   }, []);
 
-  // Persistir carrito en localStorage cada vez que cambia
+  // Persistir carrito en localStorage
   useEffect(() => {
     if (!cartLoaded) return;
     try {
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
-    } catch {
-      // localStorage lleno o bloqueado
-    }
+    } catch {}
   }, [cartItems, cartLoaded]);
 
   const handleViewDetail = useCallback((product: Product) => {
@@ -105,20 +118,15 @@ export default function Home() {
   return (
     <>
       <TopBar />
-
-      {/* Contenedor sticky único que mantiene agrupados al Header y la Navbar */}
-      <div className="sticky top-0 z-40 bg-white shadow-sm">
-        <Header
-          cartCount={cartCount}
-          onCartClick={() => setCartOpen(true)}
-          onSearch={setSearchQuery}
-        />
-        <Navbar
-          activeCategory={activeCategory}
-          onCategoryChange={setActiveCategory}
-        />
-      </div>
-
+      <Header
+        cartCount={cartCount}
+        onCartClick={() => setCartOpen(true)}
+        onSearch={setSearchQuery}
+      />
+      <Navbar
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
+      />
       <main className="flex-1">
         <Hero />
         <PromoBannerCarousel />
@@ -130,16 +138,13 @@ export default function Home() {
         />
         <InfoSections />
       </main>
-
       <Footer />
-
       <ProductDetailModal
         product={selectedProduct}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onAddToCart={handleAddToCart}
       />
-
       <CartDrawer
         isOpen={cartOpen}
         onClose={() => setCartOpen(false)}
