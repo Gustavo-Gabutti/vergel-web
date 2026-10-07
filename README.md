@@ -1,81 +1,149 @@
-Vergel — E-Commerce & CMS Headless
---Image of: --Next.js --Image of: --TypeScript --Image of: --Tailwind CSS --Image of: --Sanity --Image of: --Vercel
+Vergel — E-Commerce & Headless CMS
+Plataforma e-commerce moderna y autogestionable diseñada para Vergel (Almacén Natural & Dietética). Cuenta con catálogo dinámico sincronizado en tiempo real, carrito de compras persistente, checkout directo por WhatsApp y un panel de administración en la nube completamente integrado.
 
-Plataforma web e-commerce autogestionable y moderna desarrollada para Vergel (Almacén Natural & Dietética). Ofrece un catálogo dinámico en tiempo real, carrito de compras con persistencia local, integración directa de pedidos mediante WhatsApp y un panel de administración en la nube.
+Características Principales
+Catálogo Dinámico & Autogestionable: Integración completa con Sanity.io (Headless CMS). Gestión centralizada de productos, precios, stock, categorías y banners.
 
- Características Principales
- Catálogo Dinámico & Autogestionable: Integrado con Sanity.io (CMS Headless). Los productos, imágenes, ofertas, precios y disponibilidad de stock se gestionan desde el panel integrado.
- Sanity Studio Embebido: Acceso directo al panel de administración en /studio sin necesidad de aplicaciones o servidores externos.
- Carrito de Compras Persistente: Estado del carrito guardado en localStorage para conservar los productos seleccionados por el cliente al navegar o recargar la página.
- Checkout por WhatsApp: Envío directo del resumen del pedido con formato limpio y formateado al número de WhatsApp del almacén.
- Búsqueda & Filtros en Tiempo Real: Filtrado de productos por categorías (Mixes, Frutos Secos, Sin Gluten, Ofertas, etc.) y buscador por texto.
- Experiencia Mobile-First & Responsiva: Interfaz adaptada a celulares, tablets y computadoras de escritorio construida con Tailwind CSS.
- Alto Rendimiento (SEO & SSR): Optimización con el App Router de Next.js para carga ultrarrápida.
- Architectura y Tecnologías
+Sanity Studio Embebido: Panel de administración accesible directamente desde la ruta /studio de la aplicación, sin depender de servidores o paneles externos.
+
+Carrito de Compras Persistente: Preservación del estado del carrito en localStorage para garantizar que los productos seleccionados no se pierdan al navegar o recargar la página.
+
+Checkout directo por WhatsApp: Generación e integración automática del pedido formateado y listo para enviar al canal de atención de WhatsApp del almacén.
+
+Buscador y Filtros Dinámicos: Sistema de filtrado en tiempo real por categorías (Mixes, Frutos Secos, Sin Gluten, Ofertas, etc.) y búsqueda por palabras clave.
+
+Diseño Responsive & Mobile-First: Experiencia de usuario optimizada para dispositivos móviles, tablets y escritorio mediante Tailwind CSS.
+
+Performance & SEO Impecable: Carga ultrarrápida impulsada por Next.js App Router y renderizado estático/dinámico optimizado.
+
+Arquitectura y Tecnologías
 Frontend
 Framework: Next.js (App Router)
+
 Lenguaje: TypeScript
+
 Estilos: Tailwind CSS
-Iconos: Lucide React / React Icons
-Backend & CMS Headless
-CMS: Sanity.io
-Librerías: next-sanity, @sanity/image-url, sanity
-Consulta de datos: GROQ (Graph-Relational Object Queries)
+
+Iconografía: Lucide React / React Icons
+
+Backend & Headless CMS
+Gestor de Contenidos: Sanity.io
+
+Librerías de integración: next-sanity, @sanity/image-url, sanity
+
+Consultas de datos: GROQ (Graph-Relational Object Queries)
+
 Infraestructura
-Despliegue: Vercel
-Almacenamiento de Assets: Sanity CDN
- Estructura del Proyecto
+Despliegue Frontend: Vercel
+
+Asset Storage & CDN: Sanity Global CDN
+
+Estructura del Proyecto
 vergel-web/
-├── app/
-├── components/             # Componentes reutilizables de UI
-│   ├── CartDrawer.tsx      # Carrito lateral interactivo
-│   ├── Header.tsx          # Cabecera con buscador e ícono de carrito
-│   ├── Hero.tsx            # Banners promocionales principales
-│   ├── InfoSections.tsx    # Secciones informativas y beneficios
-│   ├── Navbar.tsx          # Barra de navegación por categorías
-│   ├── ProductCard.tsx     # Tarjeta individual de producto
-│   ├── ProductDetailModal.tsx # Modal con detalles del producto
-│   ├── ProductGrid.tsx     # Grilla de catálogo dinámico
-│   ├── PromoBannerCarousel.tsx # Carrusel de ofertas y novedades
-│   └── TopBar.tsx          # Barra superior informativa
+
+├── app/                      # Rutas y páginas principales (App Router)
+
+│   └── studio/               # Ruta dedicada para embeber Sanity Studio
+
+├── components/               # Componentes reutilizables de la interfaz
+
+│   ├── CartDrawer.tsx        # Carrito lateral interactivo
+
+│   ├── Header.tsx            # Cabecera principal con buscador
+
+│   ├── Hero.tsx              # Banners promocionales dinámicos
+
+│   ├── InfoSections.tsx      # Secciones informativas y propuestas de valor
+
+│   ├── Navbar.tsx            # Navegación por categorías del almacén
+
+│   ├── ProductCard.tsx       # Tarjeta individual de producto
+
+│   ├── ProductDetailModal.tsx# Ventana modal de detalle
+
+│   ├── ProductGrid.tsx       # Grilla del catálogo en tiempo real
+
+│   ├── PromoBannerCarousel.tsx # Carrusel de novedades y ofertas
+
+│   └── TopBar.tsx            # Barra superior de avisos
+
 ├── data/
-│   └── products.json       # Datos estáticos de respaldo
+
+│   └── products.json         # Mock data / Respaldo estático inicial
+
 ├── lib/
-│   └── sanity/             # Cliente y consultas de Sanity
-│       ├── client.ts       # Configuración del cliente Sanity
-│       ├── image.ts        # Helper para generación de URLs de imágenes
-│       └── queries.ts      # Consultas en GROQ
+
+│   └── sanity/               # Configuración del cliente y consultas
+
+│       ├── client.ts         # Cliente de Sanity
+
+│       ├── image.ts          # Helper para la generación de URLs de imágenes
+
+│       └── queries.ts        # Consultas optimizadas en GROQ
+
 ├── sanity/
-│   └── schemas/            # Esquemas de la base de datos de Sanity
-│       ├── index.ts        # Registro centralizado de esquemas
-│       └── product.ts      # Definición de la estructura del producto
-├── sanity.config.ts        # Configuración central de Sanity Studio
-└── .env.local              # Variables de entorno (ignorado en Git)
- Configuración e Instalación Local
-1. Clonar el Repositorio
+
+│   └── schemas/              # Esquemas de la base de datos de Sanity
+
+│       ├── index.ts          # Registro de esquemas
+
+│       └── product.ts        # Estructura del modelo de Producto
+
+├── sanity.config.ts          # Configuración principal de Sanity Studio
+
+└── .env.local                # Variables de entorno (Ignorado en VCS)
+
+Configuración e Instalación Local
+1. Clonar el repositorio
 git clone https://github.com/tu-usuario/vergel-web.git
+
 cd vergel-web
-2. Instalar Dependencias
+
+2. Instalar dependencias
 npm install
-3. Configurar Variables de Entorno
-Crea un archivo .env.local en la raíz del proyecto y agrega las credenciales de tu proyecto en Sanity:
+
+3. Configurar variables de entorno
+Crea un archivo .env.local en la raíz del proyecto agregando las credenciales correspondientes:
 
 NEXT_PUBLIC_SANITY_PROJECT_ID="tu_project_id_aqui"
+
 NEXT_PUBLIC_SANITY_DATASET="production"
+
 NEXT_PUBLIC_SANITY_API_VERSION="2024-01-01"
-4. Iniciar Servidor de Desarrollo
+
+4. Ejecutar el servidor de desarrollo
 npm run dev
-Abre en tu navegador:
 
-Tienda principal: http://localhost:3000
-Panel de administración (Studio): http://localhost:3000/studio
- Configuración en Producción (Vercel + Sanity)
-Variables de Entorno en Vercel: En el panel de Vercel (Settings > Environment Variables), agrega las 3 variables de entorno (NEXT_PUBLIC_SANITY_PROJECT_ID, NEXT_PUBLIC_SANITY_DATASET, NEXT_PUBLIC_SANITY_API_VERSION).
+Accedé a las siguientes URLs en tu navegador:
 
-Autorización de Dominio (CORS) en Sanity: En sanity.io/manage:
+Tienda Principal: http://localhost:3000
 
-Ve a tu proyecto Vergel > API > CORS Origins.
-Agrega la URL pública de Vercel (ej. https://vergel.vercel.app).
-Marca la opción "Allow credentials".
-📄 Licencia y Autoría
-Desarrollado a medida para Vergel — Almacén Natural. Todos los derechos reservados.
+Sanity Studio (CMS): http://localhost:3000/studio
+
+Despliegue en Producción (Vercel + Sanity)
+Variables de Entorno en Vercel:
+
+Ingresá al panel de Vercel (Settings > Environment Variables) y configurá las claves:
+
+NEXT_PUBLIC_SANITY_PROJECT_ID
+
+NEXT_PUBLIC_SANITY_DATASET
+
+NEXT_PUBLIC_SANITY_API_VERSION
+
+Permisos CORS en Sanity:
+
+Para permitir que tu web consulte los datos del CMS desde producción:
+
+Entrá a sanity.io/manage y seleccioná el proyecto Vergel.
+
+Navegá a API > CORS Origins.
+
+Agregá el dominio de tu despliegue (ej. [https://vergel.vercel.app](https://vergel.vercel.app)).
+
+Habilitá la casilla Allow credentials.
+
+Licencia y Autoría
+Desarrollado a medida para Vergel — Almacén Natural.
+
+Todos los derechos reservados.
